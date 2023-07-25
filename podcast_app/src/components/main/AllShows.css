@@ -1,0 +1,29 @@
+.show_preview{
+    display: flex;
+    flex-direction: column;
+    justify-content:center;
+    align-items:center;
+    margin: 5px;
+    padding: 5px;
+    border: 5px solid rgb(38, 255, 0);
+    border-radius: 10px;
+    box-sizing: border-box;
+    position: relative;
+}
+.podcast_show_image {
+    width: 300px;
+    height: 300px;
+    border: 2px solid red;
+    overflow: hidden;
+
+}
+.podcast_show_image img {
+    width: 100%;
+}
+.podcast_show_image img:hover {
+    opacity: 0.3;
+}
+
+.podcast_show_info {
+    padding: 10px
+}
