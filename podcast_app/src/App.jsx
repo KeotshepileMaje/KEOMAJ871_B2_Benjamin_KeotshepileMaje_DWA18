@@ -1,7 +1,7 @@
 import React from 'react'
 import './App.css'
 import ShowSeasons from './components/main/ShowSeasons'
-import AllShows from './components/main/AllShows'
+import ShowCards from './components/main/ShowCards'
 import Navbar from './components/header/Navbar'
 import data from './data'
 
@@ -11,8 +11,6 @@ export default function App() {
     const [showData, setShowData] = React.useState(data)
 
     const [show, setShow] = React.useState(false)
-
-    // console.log(showData)
 
     React.useEffect(
         () => {
@@ -27,20 +25,12 @@ export default function App() {
         setShow(
             (prev) => !prev
         )
-
-    }
-    const [showDescription, setShowDescription] = React.useState(false)
-
-    function toggleShowDescription() {
-        setShowDescription(
-            (prev) => !prev
-        )
     }
 
     const podcastTitle = preview.map(
         (podcast) => {
             return (
-                <AllShows
+                <ShowCards
                     key = {podcast.id} 
                     image = {podcast.image}
                     handleWatchShow = {podcast}
@@ -65,7 +55,7 @@ export default function App() {
             </div>
             <div>
                 {show ? 
-                <ShowSeasons data = {data} />:
+                <ShowSeasons data = {showData} />:
                 <div className="show-container">{podcastTitle}</div>
                 }
             </div>
