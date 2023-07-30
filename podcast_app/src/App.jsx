@@ -4,6 +4,8 @@ import ShowSeasons from './components/main/ShowSeasons'
 import ShowCards from './components/main/ShowCards'
 import Navbar from './components/header/Navbar'
 import data from './data'
+import Spinner from 'react-bootstrap/Spinner';
+
 
 export default function App() {
     const [preview, setPreview] = React.useState([])
@@ -12,20 +14,32 @@ export default function App() {
 
     const [show, setShow] = React.useState(false)
 
+    const [loading, setLoading] = React.useState(true)
+
     React.useEffect(
         () => {
             fetch('https://podcast-api.netlify.app/shows')
                 .then( res => res.json())
-                .then( data => setPreview(data))
+                .then( data => {
+                    setPreview(data)
+                    setLoading(false)
+                })
         }, []
     )
 
-    function handleClick () {
-        console.log('Clicked')
-        setShow(
-            (prev) => !prev
-        )
-    }
+    // React.useEffect(
+    //     () => {
+    //         fetch('https://podcast-api.netlify.app/id/5675')
+    //             .then( res => res.json())
+    //             .then( data => {
+    //                 setShowData(data)
+    //                 setLoading(false)
+    //             })
+    //     }, []
+    // )
+
+    const handleClose = () => setShow(false);
+    const handleShow = () => setShow(true);
 
     const podcastTitle = preview.map(
         (podcast) => {
@@ -36,7 +50,7 @@ export default function App() {
                     handleWatchShow = {podcast}
                     title = {podcast.title}
                     genres = {podcast.genres}
-                    handleClick = {handleClick}
+                    handleClick = {handleShow}
 
                     description = {podcast.description}
 
@@ -45,20 +59,23 @@ export default function App() {
         }
     )
 
+    if (loading) {
+
+        return <div className='loader'><Spinner animation="grow" /></div>;
+    }
+
     return (
         <div>
             <Navbar />
-            <div>
-                <button
-                    onClick= {handleClick}
-                >Go back home</button>
-            </div>
-            <div>
-                {show ? 
-                <ShowSeasons data = {showData} />:
+            <div> 
                 <div className="show-container">{podcastTitle}</div>
-                }
+                <ShowSeasons 
+                    data = {showData} 
+                    handleClose = {handleClose}
+                    show = {show}
+                />
             </div>
         </div>
     )
 }
+
