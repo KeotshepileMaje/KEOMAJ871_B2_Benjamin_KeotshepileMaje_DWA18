@@ -1,6 +1,7 @@
 import React from 'react'
 import './ShowCards.css'
 import genres from '../../data/genreData'
+import Card from 'react-bootstrap/Card';
 
 export default function ShowCards(props) {
 
@@ -13,7 +14,6 @@ export default function ShowCards(props) {
     }
 
     function findGenre(podcastGenres) {
-
         const podcast = podcastGenres.map((genreNum) => {
             const foundGenre = genres.find((genre) => genre.id === genreNum);
             return (
@@ -26,28 +26,117 @@ export default function ShowCards(props) {
         return podcast
     }
 
+    const [imageError, setImageError] = React.useState(false);
+
+    const handleImageError = () => {
+      setImageError(true);
+    };
+  
+
     return (
-        <div className='show_preview'>
-            <div className='podcast_show_image'
-                onClick = {props.handleClick}
-                >
-                <img src={props.image}  id={props.id}/>
-            </div>
-            <div className='podcast_show_info'>
-                <div>
-                    <span>NumOfSeasons {props.updated}</span>
-                    {
-                        showDescription && <span>Description: {props.description}</span>
-                    }
-                    <span>★★★</span>
-                    <span>❤</span>
-                    <button onClick = {toggleShowDescription}>More</button>
-                </div>
-                <div>Genre: {findGenre(props.genres)}</div>
-            </div>
+        <Card className='custom-card' style={{ width: '350px' }}>
+    {!imageError ? (
+    <Card.Img
+        variant="top"
+        src={props.image}
+        id={props.id}
+        onError={handleImageError}
+        onClick = {props.handleClick}
+        loading="lazy"
+    />
+    ) : (
+    <div
+        style={{
+        width: '200px',
+        height: '200px',
+        backgroundColor: 'gray',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        }}
+    >
+        Image not found
+    </div>
+    )}
+
+    <Card.Body>
+    <div className='podcast_show_info'>
+        <div>
+            <span>NumOfSeasons {props.updated}</span>
+            {
+                showDescription && <span>Description: {props.description}</span>
+            }
+            <span>★★★</span>
+            <span>❤</span>
+            <button onClick = {toggleShowDescription}>More</button>
         </div>
+        <div>Genre: {findGenre(props.genres)}</div>
+    </div>
+    </Card.Body>
+</Card>
     )
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+{/* <div className='show_preview'>
+<div className='podcast_show_image'
+    onClick = {props.handleClick}
+    >
+    <img src={props.image}  id={props.id}/>
+</div>
+<div className='podcast_show_info'>
+    <div>
+        <span>NumOfSeasons {props.updated}</span>
+        {
+            showDescription && <span>Description: {props.description}</span>
+        }
+        <span>★★★</span>
+        <span>❤</span>
+        <button onClick = {toggleShowDescription}>More</button>
+    </div>
+    <div>Genre: {findGenre(props.genres)}</div>
+</div>
+</div> */}
+
+
+
+
+
+
+
+
+
+
+
+
 
 // import React from 'react'
 // import './App.css'
@@ -70,4 +159,35 @@ export default function ShowCards(props) {
 //         </div>
 //     )
 // }
+
+
+// const [selectSeason, setSelectSeason] = React.useState(null);
+
+// function handleSeasonClick(seasonNumber) {
+//     setSelectSeason(
+//         (prevSeason) => (prevSeason === seasonNumber ? null : seasonNumber)
+//     );
+// }
+
+// function renderSeasonsOrEpisodes() {
+//     return (
+//         <div>
+//             {props.data.seasons.map((seasonData) => (
+//                 <div key={seasonData.season}>
+//                     <h2 onClick={() => handleSeasonClick(seasonData.season)}>
+//                     Season: {seasonData.season}
+//                     </h2>
+//                     {
+//                         selectSeason === seasonData.season && 
+//                         renderEpisodes(seasonData)
+//                     }
+//                 </div>
+//                 ))
+//             }
+//         </div>
+//     );
+// }
+
+
+
 
