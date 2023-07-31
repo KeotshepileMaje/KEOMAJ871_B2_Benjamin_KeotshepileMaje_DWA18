@@ -1,81 +1,28 @@
-import React from 'react'
 import './App.css'
-import ShowSeasons from './components/main/ShowSeasons'
-import ShowCards from './components/main/ShowCards'
 import Navbar from './components/header/Navbar'
-import data from './data'
-import Spinner from 'react-bootstrap/Spinner';
-
+// import data from './data'
+import MainContent from './components/MainContent'
+// import { useState } from 'react';
+import ThemeToggle from './components/header/Theme'
 
 export default function App() {
-    const [preview, setPreview] = React.useState([])
-
-    const [showData, setShowData] = React.useState(data)
-
-    const [show, setShow] = React.useState(false)
-
-    const [loading, setLoading] = React.useState(true)
-
-    React.useEffect(
-        () => {
-            fetch('https://podcast-api.netlify.app/shows')
-                .then( res => res.json())
-                .then( data => {
-                    setPreview(data)
-                    setLoading(false)
-                })
-        }, []
-    )
-
-    // React.useEffect(
-    //     () => {
-    //         fetch('https://podcast-api.netlify.app/id/5675')
-    //             .then( res => res.json())
-    //             .then( data => {
-    //                 setShowData(data)
-    //                 setLoading(false)
-    //             })
-    //     }, []
-    // )
-
-    const handleClose = () => setShow(false);
-    const handleShow = () => setShow(true);
-
-    const podcastTitle = preview.map(
-        (podcast) => {
-            return (
-                <ShowCards
-                    key = {podcast.id} 
-                    image = {podcast.image}
-                    handleWatchShow = {podcast}
-                    title = {podcast.title}
-                    genres = {podcast.genres}
-                    handleClick = {handleShow}
-
-                    description = {podcast.description}
-
-                 />
-            )
-        }
-    )
-
-    if (loading) {
-
-        return <div className='loader'><Spinner animation="grow" /></div>;
-    }
 
     return (
         <div>
+            <ThemeToggle />
             <Navbar />
-            <div> 
-                <div className="show-container">{podcastTitle}</div>
-                <ShowSeasons 
-                    data = {showData} 
-                    handleClose = {handleClose}
-                    show = {show}
-                />
-            </div>
+            <div className='content'>
+                <div className='sidebar'>
+                    <p>Favourite</p>
+                    <div>                    
+                    <form className="d-flex" role="search">
+                        <input className="form-control me-2" type="search" placeholder="Search" aria-label="Search" />
+                        <button className="btn btn-outline-success" type="submit">Search</button>
+                    </form>
+                    </div>
+                </div>
+                <MainContent />  
+            </div>      
         </div>
     )
 }
-
