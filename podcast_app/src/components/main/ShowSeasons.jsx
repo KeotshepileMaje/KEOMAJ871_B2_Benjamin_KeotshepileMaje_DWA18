@@ -1,4 +1,3 @@
-// import data from '../../data.jsx'
 import './ShowSeasons.css'
 // import 'bootstrap/dist/css/bootstrap.css'
 import { useState } from 'react';
