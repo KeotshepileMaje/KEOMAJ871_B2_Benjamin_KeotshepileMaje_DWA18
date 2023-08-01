@@ -31,49 +31,39 @@ export default function ShowCards(props) {
     const handleImageError = () => {
       setImageError(true);
     };
-  
 
     return (
-        <Card className='custom-card' style={{ width: '350px' }}>
-    {!imageError ? (
-    <Card.Img
-        variant="top"
-        src={props.image}
-        id={props.id}
-        onError={handleImageError}
-        onClick = {props.handleClick}
-        loading="lazy"
-    />
-    ) : (
-    <div
-        style={{
-        width: '200px',
-        height: '200px',
-        backgroundColor: 'gray',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        }}
-    >
-        Image not found
-    </div>
-    )}
+        <Card className='custom-card'>
+            {imageError ? 
+                (
+                <div className='image-block'>
+                    Image not found
+                </div>
+            ): 
+            (
+                <Card.Img
+                    variant="top"
+                    src={props.image}
+                    id={props.id}
+                    onError={handleImageError}
+                    onClick = {props.handleClick}
+                    loading="lazy"
+                />
+            ) }
 
-    <Card.Body>
-    <div className='podcast_show_info'>
-        <div>
-            <span>NumOfSeasons {props.updated}</span>
-            {
-                showDescription && <span>Description: {props.description}</span>
-            }
-            <span>★★★</span>
-            <span>❤</span>
-            <button onClick = {toggleShowDescription}>More</button>
-        </div>
-        <div>Genre: {findGenre(props.genres)}</div>
-    </div>
-    </Card.Body>
-</Card>
+            <Card.Body>
+                <div className='podcast_show_info'>
+                        <span>NumOfSeasons {props.updated}</span>
+                        {
+                        showDescription && <span>Description: {props.description}</span>
+                        }
+                        <span>★★★</span>
+                        <span>❤</span>
+                        <button onClick = {toggleShowDescription}>More</button>
+                    <div>Genre: {findGenre(props.genres)}</div>
+                </div>
+            </Card.Body>
+        </Card>
     )
 }
 
