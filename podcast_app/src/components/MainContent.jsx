@@ -6,11 +6,16 @@ import Spinner from 'react-bootstrap/Spinner';
 import './MainContent.css'
 import Sidebar from './sidebar/Sidebar';
 import CustomShowArrangement from './sidebar/CustomShowArrangement';
+import Search from './header/Search';
+import Accordion from 'react-bootstrap/Accordion'
+import Fuse from 'fuse.js'
+import Favourite from './sidebar/Favourite';
 
 export default function MainContent () {
+    
     const [preview, setPreview] = React.useState([])
 
-    const [showData, setShowData] = React.useState()
+    const [showData, setShowData] = React.useState(null)
 
     const [show, setShow] = React.useState(false)
 
@@ -38,18 +43,33 @@ export default function MainContent () {
         }, []
     )
 
+    const [searchInput, setSearchInput] = useState({
+        search : ''
+    })
+
+    function handleSearchInput (event) {
+        const {name, value} = event.target
+        setSearchInput(
+            prevInput => ({
+                ...prevInput,
+                [name]: value
+            }))
+    }
+
+    const fuse = new Fuse(preview, {
+        keys: [
+            'title',
+            // 'genres'
+        ],
+        includeScore: true,
+        threshold: 0.5,
+    });
+
+    const results = fuse.search(searchInput.search)
+    const searchResults = searchInput.search === '' ? preview : results.map(character => character.item)
+
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
-
-    /*
-        ✅ User can arrange the list of shows by title from A-Z
-        ✅ User can arrange the list of shows by title from Z-A
-        ✅ User can arrange the list of shows by date updated in ascending order
-        ✅ User can arrange the list of shows by date updated in descending order
-        ✅ User can filter shows by title through a text input
-        ✅ User can find shows based on fuzzy matching of strings (you can use something like https://fusejs.io/)
-        ✅ Automatically filter shows by genre if the genre label is clicked on
-    */
 
     const [activeButton, setActiveButton] = useState('Default');
 
@@ -57,38 +77,35 @@ export default function MainContent () {
       setActiveButton(buttonName);
     };
 
-    const defaultArrange = preview
-    const arrangeA_Z = [...preview].sort((a, b) => a.title.localeCompare(b.title))
-    const arrangeZ_A = [...preview].sort((a, b) => b.title.localeCompare(a.title))
-    const ascendingOrder = [...preview].sort((a, b) => new Date(a.updated) - new Date(b.updated))
-    const descendingOrder = [...preview].sort((a, b) => new Date(b.updated) - new Date(a.updated))
+    function sortingData() {
+        const defaultArrange = preview
+        const arrangeA_Z = [...preview].sort((a, b) => a.title.localeCompare(b.title))
+        const arrangeZ_A = [...preview].sort((a, b) => b.title.localeCompare(a.title))
+        const ascendingOrder = [...preview].sort((a, b) => new Date(a.updated) - new Date(b.updated))
+        const descendingOrder = [...preview].sort((a, b) => new Date(b.updated) - new Date(a.updated))
 
-    function abc() {
+        if (searchInput.search !== '') {
+            return searchResults 
+        }
+
         if (activeButton === 'Default' ) {
             return defaultArrange
-            // return 'DDDD'
         }
         if (activeButton === 'A-Z' ) {
             return arrangeA_Z
-            // return 'aaaaa'
         }
         if (activeButton === 'Z-A' ) {
             return arrangeZ_A
-            // return 'zzzzzzz'
         }
         if (activeButton === 'Latest date' ) {
             return ascendingOrder
-            // return 'llllll'
         }
         if (activeButton === 'Oldest date' ) {
             return descendingOrder
-            // return 'ooooo'
         }
     }
 
-    const dataSorting = abc()
-
-    console.log(dataSorting)
+    const dataSorting = sortingData()
 
     const podcastTitle = dataSorting.map(
         (podcast) => {
@@ -100,7 +117,7 @@ export default function MainContent () {
                     title = {podcast.title}
                     genres = {podcast.genres}
                     handleClick = {handleShow}
-
+                    numOfSeasons = {podcast.seasons}
                     description = {podcast.description}
 
                  />
@@ -115,21 +132,38 @@ export default function MainContent () {
     return (
         <div className='content'>
             <Sidebar>
-                <CustomShowArrangement 
-                    handleButtonClick = {handleButtonClick}
-                    activeButton = {activeButton}
-                />
+                <Search 
+                    preview = {preview}
+                    searchInput = {searchInput}
+                    setSearchInput = {setSearchInput}
+                    handleSearchInput = {handleSearchInput} 
+                 />
+                <Accordion defaultActiveKey="0" flush>
+                    <Accordion.Item eventKey="0">
+                        <Accordion.Header>Discover</Accordion.Header>
+                        <Accordion.Body>
+                            <CustomShowArrangement 
+                                handleButtonClick = {handleButtonClick}
+                                activeButton = {activeButton}
+                            />
+                        </Accordion.Body>
+                    </Accordion.Item>
+                </Accordion>
+
+                <Favourite/>
             </Sidebar>
             <div className='container-sm'>  
                 <div className="show-container">{podcastTitle}</div>
-                <ShowSeasons 
-                    data = {showData} 
-                    handleClose = {handleClose}
-                    show = {show}
-                />
+                {
+                    showData !== null 
+                    &&
+                    <ShowSeasons 
+                        data = {showData} 
+                        handleClose = {handleClose}
+                        show = {show}
+                    />
+                }
             </div>
         </div>      
     )
 }
-
-      
