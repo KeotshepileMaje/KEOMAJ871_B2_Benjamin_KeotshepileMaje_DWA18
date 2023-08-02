@@ -49,7 +49,7 @@ export default function ShowSeason(props) {
     }
 
     return (
-        <>
+        <div className='container'>
             <Modal
             show={props.show}
             onHide={props.handleClose}
@@ -68,13 +68,12 @@ export default function ShowSeason(props) {
                     </Button>
                 </Modal.Footer>
             </Modal>
-
             {/* Render the episodes modal */}
             <EpisodesModal
             show={showEpisodesModal}
             handleClose={closeEpisodesModal}
             selectedSeasonData={props.data.seasons.find((seasonData) => seasonData.season === selectSeason)}
             />
-        </>
+        </div>
     );
 }

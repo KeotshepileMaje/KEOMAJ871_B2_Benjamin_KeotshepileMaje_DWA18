@@ -1,23 +1,11 @@
-import Accordion from 'react-bootstrap/Accordion';
-import './Sidebar.css'
-import Search from '../header/Search';
+import './Sidebar.css';
 
 export default function Sidebar ({children}) {
-
     return (
             <div className="d-flex flex-column flex-shrink-0 p-3 bg-body-tertiary sticky-top sidebar-color" style={{ width: '280px' }}>
                 <hr />
                 <ul className="nav nav-pills flex-column mb-auto">
-
-                <Search />
-                <Accordion defaultActiveKey="0" flush>
-                    <Accordion.Item eventKey="0">
-                        <Accordion.Header>Discover</Accordion.Header>
-                        <Accordion.Body>
-                            {children}
-                        </Accordion.Body>
-                    </Accordion.Item>
-                </Accordion>
+                    {children}
                 </ul>
                 <hr />
             </div>
