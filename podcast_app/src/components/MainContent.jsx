@@ -1,43 +1,38 @@
-import React, { useState } from 'react'
+import { useState, useEffect } from 'react'
 import ShowSeasons from './main/ShowSeasons'
 import ShowCards from './main/ShowCards'
-// import data from '../data'
 import Spinner from 'react-bootstrap/Spinner';
 import './MainContent.css'
 import Sidebar from './sidebar/Sidebar';
 import CustomShowArrangement from './sidebar/CustomShowArrangement';
 import Search from './header/Search';
 import Accordion from 'react-bootstrap/Accordion'
+import Button from 'react-bootstrap/Button';
+import Card from 'react-bootstrap/Card';
 import Fuse from 'fuse.js'
-import Favourite from './sidebar/Favourite';
+import FetchFavouriteEpisode from './main/FetchFavouriteEpi';
 
 export default function MainContent () {
     
-    const [preview, setPreview] = React.useState([])
+    const [preview, setPreview] = useState([])
 
-    const [showData, setShowData] = React.useState(null)
+    const [showData, setShowData] = useState(null)
 
-    const [show, setShow] = React.useState(false)
+    const [show, setShow] = useState(false)
 
-    const [loading, setLoading] = React.useState(true)
+    const [loading, setLoading] = useState(true)
 
-    React.useEffect(
+    const [favoriteClicked, setFavoriteClicked] = useState(false);
+
+    const [modalShow, setModalShow] = useState(false);
+
+
+    useEffect(
         () => {
             fetch('https://podcast-api.netlify.app/shows')
                 .then( res => res.json())
                 .then( data => {
                     setPreview(data)
-                    setLoading(false)
-                })
-        }, []
-    )
-
-    React.useEffect(
-        () => {
-            fetch('https://podcast-api.netlify.app/id/5675')
-                .then( res => res.json())
-                .then( data => {
-                    setShowData(data)
                     setLoading(false)
                 })
         }, []
@@ -67,9 +62,6 @@ export default function MainContent () {
 
     const results = fuse.search(searchInput.search)
     const searchResults = searchInput.search === '' ? preview : results.map(character => character.item)
-
-    const handleClose = () => setShow(false);
-    const handleShow = () => setShow(true);
 
     const [activeButton, setActiveButton] = useState('Default');
 
@@ -107,23 +99,39 @@ export default function MainContent () {
 
     const dataSorting = sortingData()
 
-    const podcastTitle = dataSorting.map(
-        (podcast) => {
-            return (
-                <ShowCards
-                    key = {podcast.id} 
-                    image = {podcast.image}
-                    handleWatchShow = {podcast}
-                    title = {podcast.title}
-                    genres = {podcast.genres}
-                    handleClick = {handleShow}
-                    numOfSeasons = {podcast.seasons}
-                    description = {podcast.description}
+    const handleClose = () => setShow(false);
+    const handleShow = () => setShow(true);
 
-                 />
-            )
-        }
-    )
+    const handleCardClick = (podcastId) => {
+        console.log("Clicked ID:", podcastId);
+
+        fetch(`https://podcast-api.netlify.app/id/${podcastId}`)
+            .then((res) => res.json())
+            .then((data) => {
+                setShowData(data);
+                handleShow();
+            });
+    };
+
+    const podcastShowCards = dataSorting.map((podcast) => {
+        return (
+            <ShowCards
+                key={podcast.id}
+                image={podcast.image}
+                title={podcast.title}
+                genres={podcast.genres}
+                handleClick={() => handleCardClick(podcast.id)}
+                numOfSeasons={podcast.seasons}
+                description={podcast.description}
+                updated = {podcast.updated}
+            />
+        );
+    });
+
+    const handleFavoriteClick = () => {
+        setFavoriteClicked((prev => !prev));
+       
+    };
 
     if (loading) {
         return <div className='loader'><Spinner animation="grow" /></div>;
@@ -149,21 +157,34 @@ export default function MainContent () {
                         </Accordion.Body>
                     </Accordion.Item>
                 </Accordion>
-
-                <Favourite/>
+                <Card style={{ marginTop: '1rem' }}>
+                    <Card.Body>
+                    <div className="d-grid gap-2">
+                        <Button variant="outline-primary" onClick={() => setModalShow(true)}>Favorite</Button>
+                    </div>
+                        <FetchFavouriteEpisode
+                            show={modalShow}
+                            onHide={() => setModalShow(false)}
+                        />
+                    </Card.Body>
+                </Card>
+                
             </Sidebar>
-            <div className='container-sm'>  
-                <div className="show-container">{podcastTitle}</div>
-                {
-                    showData !== null 
-                    &&
-                    <ShowSeasons 
-                        data = {showData} 
-                        handleClose = {handleClose}
-                        show = {show}
-                    />
-                }
-            </div>
+            <div className='container-sm'>
+                <div className='favorite-container'>{favoriteClicked && <FetchFavouriteEpisode />}</div>
+                <div className="show-container">
+                {favoriteClicked && <FetchFavouriteEpisode />}
+                {podcastShowCards}</div>
+                    {
+                        showData !== null 
+                        &&
+                        <ShowSeasons 
+                            data = {showData} 
+                            handleClose = {handleClose}
+                            show = {show}
+                        />
+                    }
+                </div>
         </div>      
     )
 }
