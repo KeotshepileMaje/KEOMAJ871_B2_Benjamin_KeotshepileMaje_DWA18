@@ -1,68 +1,169 @@
 import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
+import Card from 'react-bootstrap/Card';
+import ButtonGroup from 'react-bootstrap/ButtonGroup';
+import './EpisodesModal.css'
+// import Favourite from '../sidebar/Favourite';
+import { useState, useEffect } from 'react';
+import supabase from '../../config/supabaseClient';
 
-export default function EpisodesModal({ show, handleClose, selectedSeasonData }) {
+export default function EpisodesModal({ show, handleClose, selectedSeasonData, seasons, selectedSeason, showTitle }) {
+
+    const [selectSeason, setSelectSeason] = useState(selectedSeason);
+
+    function handleSeasonClick(seasonNumber) {
+        setSelectSeason(seasonNumber);
+    }
+
+    const [favorites, setFavorites] = useState({});
+    const [favoriteEpisode, addFavoriteEpisode] = useState([])
+
+    useEffect(() => {
+        if (favoriteEpisode.length > 0) {
+            saveFavoritesToSupabase();
+        }
+    }, [favoriteEpisode]);
+
     if (!selectedSeasonData) return null;
 
-    function mappingOverEpisodes(data) {
+    function togggleFavourite(episodeId) {
+        setFavorites(prevFavorites => {
+            const isCurrentlyFavorited = prevFavorites[episodeId];
+    
+            // Do nothing if the episode is already favorited
+            if (isCurrentlyFavorited) {
+                return prevFavorites;
+            }
+    
+            const updatedFavorites = {
+                ...prevFavorites,
+                [episodeId]: true,
+            };
+    
+            const episodeDetails = selectedSeasonData.episodes.find(
+                episode => episode.episode === episodeId
+            );
+            // Store the latest favorite episode object
+            addFavoriteEpisode([episodeDetails]);
+    
+            return updatedFavorites;
+        });
+    }
+
+
+    function MappingOverEpisodes({data}) {
         const episodeStore = data.episodes.map((episodeData) => {
+
+            const episodeId = episodeData.episode;
+
+            const hollowHeart = (
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" className="bi bi-heart-fill" viewBox="0 0 16 16">
+                    <path fillRule="evenodd" d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314z"/>
+                </svg>
+            )
+            const fillHeart = (
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" className="bi bi-heart" viewBox="0 0 16 16">
+                    <path d="m8 2.748-.717-.737C5.6.281 2.514.878 1.4 3.053c-.523 1.023-.641 2.5.314 4.385.92 1.815 2.834 3.989 6.286 6.357 3.452-2.368 5.365-4.542 6.286-6.357.955-1.886.838-3.362.314-4.385C13.486.878 10.4.28 8.717 2.01L8 2.748zM8 15C-7.333 4.868 3.279-3.04 7.824 1.143c.06.055.119.112.176.171a3.12 3.12 0 0 1 .176-.17C12.72-3.042 23.333 4.867 8 15z"/>
+                </svg>
+            )
+            const favoriteIcon = favorites[episodeId] ? (
+                <span onClick={() => togggleFavourite(episodeId)}>
+                    {hollowHeart}
+                </span>
+            ) : (
+                <span onClick={() => togggleFavourite(episodeId)}>
+                    {fillHeart}
+                </span>
+            );
+
             return (
                 <div className='episode_data' key={episodeData.episode}>
-                    <h4>Episode: {episodeData.episode}</h4>
+                <Card body>
+                    <div 
+                        className='card-header' 
+                        style={{ 
+                            display: 'flex', 
+                            justifyContent: 'space-between', 
+                            alignItems: 'center' 
+                        }}
+                    >
+                        <h4>Episode: {episodeData.episode}</h4>
+                        <div className='favourite-episode'>
+                            {favoriteIcon}
+                        </div>
+                    </div>
                     <h5>{episodeData.title}</h5>
                     <p>Description: {episodeData.description}</p>
                     <audio controls>
                         <source src={episodeData.file} type="audio/mpeg" />
                     </audio>
+                </Card>
                 </div>
             );
         });
         return episodeStore;
     }
 
+    async function saveFavoritesToSupabase() {
+        try {
+            const { data, error } = await supabase.from('favorite').upsert(
+                [...favoriteEpisode]);
+
+            if (error) {
+                console.error('Error saving favorites to Supabase:', error.message);
+            } else {
+                console.log('Favorites saved successfully:', data);
+            }
+        } catch (error) {
+            console.error('Error saving favorites:', error.message);
+        }
+    }
+    
     return (
         <Modal 
             show={show} 
             onHide={handleClose} 
-            backdrop="static" 
             keyboard={false}
+            size = 'xl'
         >
-        <Modal.Header >
-            <div className='season-view'>
-            <img src={selectedSeasonData.image} width= '300px'/>
-            <Modal.Title>Season {selectedSeasonData.season}</Modal.Title>
+            <Modal.Header >
+            <div className="card mb-3" style={{maxHeight: '300px', overflow: 'hidden'}}>
+                <div className="row g-0">
+                    <div className="card text-bg-dark">
+                        <img src={selectedSeasonData.image} className="card-img"/>
+                    <div className="card-img-overlay">
+                        <h2 className="card-title">{showTitle}</h2>
+                    </div>
+                </div>       
             </div>
-        </Modal.Header>
-        <Modal.Body>{mappingOverEpisodes(selectedSeasonData)}</Modal.Body>
-        <Modal.Footer>
-            <Button variant="secondary" onClick={handleClose}>
-                Close
-            </Button>
-        </Modal.Footer>
-    </Modal>
+            </div>
+            </Modal.Header>
+            <Modal.Body>
+                {
+                    seasons.map((season) => (
+                        <Button
+                            key={season.season}
+                            onClick={() => handleSeasonClick(season.season)}
+                            variant={selectSeason === season.season ? "primary" : "outline-primary"}
+                        >
+                        S{season.season}
+                        </Button>
+                    )
+                )
+                    }
+                {
+                    selectSeason && (
+                        <MappingOverEpisodes 
+                            data={seasons.find((seasonData) => seasonData.season === selectSeason)}
+                        />
+                    )
+                }
+            </Modal.Body>
+            <Modal.Footer>
+                <Button variant="secondary" onClick={handleClose}>
+                    Close
+                </Button>
+            </Modal.Footer>
+        </Modal>
     );
 }
-
-
-// import './EpisodesModal.css'
-/*
-        <div className="overlay" data-list-active>
-    <div className="overlay__preview">
-        <img className="overlay__blur" data-list-blur src={selectedSeasonData.image} width= '300px'/>
-        <img className="overlay__image" data-list-image src={selectedSeasonData.image}/>
-    </div>
-
-    <div className="overlay__content">
-        <h3 className="overlay__title" data-list-title>
-            Season {selectedSeasonData.season}
-        </h3>
-        <div className="overlay__data" data-list-subtitle>
-            {mappingOverEpisodes(selectedSeasonData)}
-        </div>
-        <p className="overlay__data overlay__data_secondary" data-list-description></p>
-    </div>
-
-    <div className="overlay__row">
-        <button className="overlay__button overlay__button_primary" data-list-close onClick={handleClose}>Close</button>
-    </div>
-*/
