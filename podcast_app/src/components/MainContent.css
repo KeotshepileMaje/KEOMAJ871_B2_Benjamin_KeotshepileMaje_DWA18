@@ -10,6 +10,7 @@
     overflow: hidden;
     margin: 10px;
     padding: 5px;
+    position: relative
 }
 
 .show-container {
@@ -19,8 +20,10 @@
     margin: 5px;
     overflow-y: auto;
     height: 100%;
-} 
-
+}
+.favorite-container{
+    overflow-y: auto;
+}
 .loader{
     position: absolute;
     top: 50%;
