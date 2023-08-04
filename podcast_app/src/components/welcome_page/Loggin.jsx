@@ -1,27 +1,21 @@
-import Form from './form'
-import Navbar from '../header/Navbar'
+import { useState } from 'react';
+import LoginForm from './LoginForm';
+import RegistrationForm from './RegistrationForm';
 
-export default function Loggin () {
+export default function Loggin() {
+    const [showRegistrationForm, setShowRegistrationForm] = useState(false);
+
+    const toggleForm = () => {
+        setShowRegistrationForm(!showRegistrationForm);
+    };
 
     return (
         <div>
-            <Navbar />
-            <Form />
+            {showRegistrationForm ? (
+                <RegistrationForm toggleForm={toggleForm} />
+            ) : (
+                <LoginForm toggleForm={toggleForm} />
+            )}
         </div>
-    )
+    );
 }
-
-/**
- * The code from App
- */
-
-// import React from 'react'
-// import Loggin from './components/welcome_page/Loggin'
-
-// export default function App() {
-//     return (
-//         <div>
-//             <Loggin />
-//         </div>
-//     )
-// }
