@@ -6,7 +6,7 @@ import Loggin from './components/welcome_page/Loggin';
 function Home() {
     return (
         <div className='Home'>
-            <Navbar />
+            <NavbarComponent />
             <MainContent />  
          </div>
     )
