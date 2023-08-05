@@ -2,7 +2,7 @@ import React from 'react'
 import './LogginForm.css'
 import supabase from '../../config/supabaseClient';
 
-export default function Form ({ toggleForm }) {
+export default function LoginForm ({ toggleForm, handleLoggin }) {
 
     const [formData, setFormData] = React.useState({
         email: "",
@@ -76,7 +76,7 @@ export default function Form ({ toggleForm }) {
                                     <p className="text-center">By signing up you accept our <a href="#">Terms Of Use</a></p>
                                 </div>
                                 <div className="col-md-12 text-center ">
-                                    <button type="submit" className=" btn btn-block mybtn btn-primary tx-tfm">Login</button>
+                                    <button onClick={handleLoggin} type="submit" className=" btn btn-block mybtn btn-primary tx-tfm">Login</button>
                                 </div>
                                 <div className="col-md-12 ">
                                     <div className="login-or">

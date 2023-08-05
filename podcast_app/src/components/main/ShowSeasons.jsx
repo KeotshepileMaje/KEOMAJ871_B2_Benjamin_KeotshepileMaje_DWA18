@@ -97,6 +97,7 @@ export default function ShowSeason(props) {
                 seasons={props.data.seasons} 
                 selectedSeason={selectSeason}
                 showTitle={props.data.title}
+                updated={props.updated}
             />
         </div>
     );

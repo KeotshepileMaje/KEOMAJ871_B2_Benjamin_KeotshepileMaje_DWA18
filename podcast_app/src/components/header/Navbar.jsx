@@ -1,26 +1,25 @@
-export default function Navbar () {
+import React from 'react';
+import Button from 'react-bootstrap/Button';
+import Container from 'react-bootstrap/Container';
+import Navbar from 'react-bootstrap/Navbar';
+import './Navbar.css'; // Import your CSS file for styling
 
-    return (
-        <nav className="navbar navbar-expand-md sticky-top navbar-dark bg-dark">
-            <div className="container-fluid">
-                <a className="navbar-brand" href="#"><img src='/public/soundwavehub-low-resolution-logo-color-on-transparent-background.png' width='30px'/></a>
-
-                <div className="collapse navbar-collapse" id="navbarCollapse">
-                    <ul className="navbar-nav me-auto mb-2 mb-md-0">
-                        <li className="nav-item">
-                            <a className="nav-link active" aria-current="page" href="#">Home</a>
-                        </li>
-                        <li className="nav-item">
-                            <a className="nav-link" href="#">Link</a>
-                        </li>
-                        <li className="nav-item">
-                        <a className="nav-link disabled" aria-disabled="true">Disabled</a>
-                        </li>
-                    </ul>
-                    <a className="navbar-brand" href="#"><div style = {{color: "white"}}>ABOUT</div></a>
-                    <button className="btn btn-outline-success" type="submit">Sign Out</button>
-                </div>
+export default function NavbarComponent() {
+  return (
+    <Navbar expand="lg" className="bg-body-tertiary">
+      <Container fluid>
+        <Navbar.Brand href="#"><img src="/public/podcast_logo.png" style={{width: '200px'}}/></Navbar.Brand>
+        <Navbar.Toggle aria-controls="navbarScroll" />
+        <Navbar.Collapse id="navbarScroll">
+          <div className='navbar-flex-container'>
+            <div className='navbar-left'>
             </div>
-        </nav> 
-    )
+            <div className='navbar-right'>
+              <Button style={{ color: "white" }} className="btn btn-outline-success" type="submit">Sign Out</Button>
+            </div>
+          </div>
+        </Navbar.Collapse>
+      </Container>
+    </Navbar>
+  );
 }

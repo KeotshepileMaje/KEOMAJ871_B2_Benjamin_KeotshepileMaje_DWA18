@@ -3,4 +3,29 @@
     margin: 0px;
     padding: 0px;
 }
+
+/* Regular styles for larger screens */
+.content {
+    display: flex;
+}
+
+.sidebar-container {
+    /* Add your existing styles for the sidebar container */
+}
+
+/* Media query for small screens */
+@media (max-width: 768px) {
+    .content {
+        flex-direction: column;
+    }
+
+    .sidebar-container {
+        display: none;
+    }
+}
+
+
+
+
+
   

@@ -85,7 +85,7 @@ export default function FetchFavouriteEpisode(props, { selectedSeason }) {
     };
 
     if (favEpisode === null) {
-        return []; // Return an empty array if favEpisode is null
+        return []; 
     }
 
     function sortingData() {
@@ -114,13 +114,15 @@ export default function FetchFavouriteEpisode(props, { selectedSeason }) {
 
     const dataSorting = sortingData()
 
+    console.log(dataSorting)
+
     function FetchFavEpisode () {
         return (
             <div>
                 {fetchError && (<p>{fetchError}</p>)}
                 {
-                    favEpisode &&
-                    favEpisode.map(
+                    dataSorting &&
+                    dataSorting.map(
                         eachEpi => (
                             <div className='episode_data' key={eachEpi.id}>
                                 <Card body>
@@ -132,14 +134,16 @@ export default function FetchFavouriteEpisode(props, { selectedSeason }) {
                                             alignItems: 'center'
                                         }}
                                     >
-                                        <h4>Episode: {eachEpi.episode}</h4>
+                                        <h2>{eachEpi.showName}</h2>
                                         <div
                                             className='favourite-episode'
                                             onClick={() => toggleFavorite(eachEpi.id)}
                                         >
+                                            <span style={{marginRight: '1rem'}}>S{eachEpi.season} : E{eachEpi.episode}</span>
                                             {favEpisode.some(epi => epi.id === eachEpi.id) ? fillHeart : hollowHeart}
                                         </div>
                                     </div>
+                                    <small className="text-body-secondary">Last updated</small>
                                     <h5>{eachEpi.title}</h5>
                                     <p>Description: {eachEpi.description}</p>
                                     <audio controls>
@@ -167,17 +171,17 @@ export default function FetchFavouriteEpisode(props, { selectedSeason }) {
                     <Modal.Title id="contained-modal-title-vcenter">
                         Favorite
                     </Modal.Title>
-<Accordion defaultActiveKey="0" flush>
-    <Accordion.Item eventKey="0">
-        <Accordion.Header>Sort By</Accordion.Header>
-        <Accordion.Body>
-            <CustomShowArrangement 
-            handleButtonClick = {handleButtonClick}
-            activeButton = {activeButton}
-        />
-        </Accordion.Body>
-    </Accordion.Item>
-</Accordion>
+                    <Accordion defaultActiveKey="0" flush>
+                        <Accordion.Item eventKey="0">
+                            <Accordion.Header>Sort By</Accordion.Header>
+                            <Accordion.Body>
+                                <CustomShowArrangement 
+                                handleButtonClick = {handleButtonClick}
+                                activeButton = {activeButton}
+                            />
+                            </Accordion.Body>
+                        </Accordion.Item>
+                    </Accordion>
                     </div>
                 </Modal.Header>
                 <Modal.Body>

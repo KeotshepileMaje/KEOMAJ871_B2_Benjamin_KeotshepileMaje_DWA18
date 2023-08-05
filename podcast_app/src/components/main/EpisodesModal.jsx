@@ -6,8 +6,18 @@ import './EpisodesModal.css'
 // import Favourite from '../sidebar/Favourite';
 import { useState, useEffect } from 'react';
 import supabase from '../../config/supabaseClient';
+import formatDateTime from '../../tools/formatDateTime';
 
-export default function EpisodesModal({ show, handleClose, selectedSeasonData, seasons, selectedSeason, showTitle }) {
+function AudioPlayer({audioFile}) {
+
+    return (
+        <audio controls>
+            <source src={audioFile} type="audio/mpeg" />
+        </audio>
+    );
+}
+
+export default function EpisodesModal({ show, handleClose, selectedSeasonData, seasons, selectedSeason, showTitle, updated }) {
 
     const [selectSeason, setSelectSeason] = useState(selectedSeason);
 
@@ -30,11 +40,10 @@ export default function EpisodesModal({ show, handleClose, selectedSeasonData, s
         setFavorites(prevFavorites => {
             const isCurrentlyFavorited = prevFavorites[episodeId];
     
-            // Do nothing if the episode is already favorited
             if (isCurrentlyFavorited) {
                 return prevFavorites;
             }
-    
+
             const updatedFavorites = {
                 ...prevFavorites,
                 [episodeId]: true,
@@ -43,13 +52,22 @@ export default function EpisodesModal({ show, handleClose, selectedSeasonData, s
             const episodeDetails = selectedSeasonData.episodes.find(
                 episode => episode.episode === episodeId
             );
+
+            const moreDetailAboutEpisode = {
+                ...episodeDetails,
+                season: selectSeason,
+                addedDateTime:  formatDateTime(new Date().toISOString()),
+                showName: showTitle,
+                lastUpdate: updated
+            };
             // Store the latest favorite episode object
-            addFavoriteEpisode([episodeDetails]);
-    
+            addFavoriteEpisode(prevEpisodes => [{...moreDetailAboutEpisode}]);
+
             return updatedFavorites;
         });
     }
 
+    console.log(favoriteEpisode)
 
     function MappingOverEpisodes({data}) {
         const episodeStore = data.episodes.map((episodeData) => {
@@ -94,9 +112,9 @@ export default function EpisodesModal({ show, handleClose, selectedSeasonData, s
                     </div>
                     <h5>{episodeData.title}</h5>
                     <p>Description: {episodeData.description}</p>
-                    <audio controls>
-                        <source src={episodeData.file} type="audio/mpeg" />
-                    </audio>
+                    <AudioPlayer
+                        audioFile = {episodeData.file}
+                    />
                 </Card>
                 </div>
             );

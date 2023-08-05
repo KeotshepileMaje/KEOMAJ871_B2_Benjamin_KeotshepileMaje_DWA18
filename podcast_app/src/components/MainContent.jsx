@@ -139,6 +139,7 @@ export default function MainContent () {
 
     return (
         <div className='content'>
+            <div className="sidebar-container"> 
             <Sidebar>
                 <Search 
                     preview = {preview}
@@ -168,8 +169,8 @@ export default function MainContent () {
                         />
                     </Card.Body>
                 </Card>
-                
             </Sidebar>
+            </div>
             <div className='container-sm'>
                 <div className='favorite-container'>{favoriteClicked && <FetchFavouriteEpisode />}</div>
                 <div className="show-container">
@@ -182,6 +183,8 @@ export default function MainContent () {
                             data = {showData} 
                             handleClose = {handleClose}
                             show = {show}
+                            updated = {showData.updated}
+                            showTitle={showData.title}
                         />
                     }
                 </div>
