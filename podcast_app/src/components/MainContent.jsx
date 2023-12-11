@@ -11,6 +11,7 @@ import Button from 'react-bootstrap/Button';
 import Card from 'react-bootstrap/Card';
 import Fuse from 'fuse.js'
 import FetchFavouriteEpisode from './main/FetchFavouriteEpi';
+import sortingData from '../tools/sortingData';
 
 export default function MainContent () {
     
@@ -69,47 +70,20 @@ export default function MainContent () {
       setActiveButton(buttonName);
     };
 
-    function sortingData() {
-        const defaultArrange = preview
-        const arrangeA_Z = [...preview].sort((a, b) => a.title.localeCompare(b.title))
-        const arrangeZ_A = [...preview].sort((a, b) => b.title.localeCompare(a.title))
-        const ascendingOrder = [...preview].sort((a, b) => new Date(a.updated) - new Date(b.updated))
-        const descendingOrder = [...preview].sort((a, b) => new Date(b.updated) - new Date(a.updated))
-
-        if (searchInput.search !== '') {
-            return searchResults 
-        }
-
-        if (activeButton === 'Default' ) {
-            return defaultArrange
-        }
-        if (activeButton === 'A-Z' ) {
-            return arrangeA_Z
-        }
-        if (activeButton === 'Z-A' ) {
-            return arrangeZ_A
-        }
-        if (activeButton === 'Latest date' ) {
-            return ascendingOrder
-        }
-        if (activeButton === 'Oldest date' ) {
-            return descendingOrder
-        }
-    }
-
-    const dataSorting = sortingData()
+    const dataSorting = sortingData(preview, activeButton, searchInput, searchResults)
 
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
 
     const handleCardClick = (podcastId) => {
         console.log("Clicked ID:", podcastId);
-
+        setLoading(true)
         fetch(`https://podcast-api.netlify.app/id/${podcastId}`)
             .then((res) => res.json())
             .then((data) => {
                 setShowData(data);
                 handleShow();
+                setLoading(false)
             });
     };
 

@@ -5,7 +5,7 @@ import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
 import CustomShowArrangement from "../sidebar/CustomShowArrangement";
 import Accordion from 'react-bootstrap/Accordion'
-
+import sortingData from "../../tools/sortingData";
 
 export default function FetchFavouriteEpisode(props, { selectedSeason }) {
     const [favEpisode, setFavEpisode] = useState(null)
@@ -88,31 +88,7 @@ export default function FetchFavouriteEpisode(props, { selectedSeason }) {
         return []; 
     }
 
-    function sortingData() {
-        const defaultArrange = favEpisode
-        const arrangeA_Z = [...favEpisode].sort((a, b) => a.title.localeCompare(b.title))
-        const arrangeZ_A = [...favEpisode].sort((a, b) => b.title.localeCompare(a.title))
-        const ascendingOrder = [...favEpisode].sort((a, b) => new Date(a.updated) - new Date(b.updated))
-        const descendingOrder = [...favEpisode].sort((a, b) => new Date(b.updated) - new Date(a.updated))
-
-        if (activeButton === 'Default' ) {
-            return defaultArrange
-        }
-        if (activeButton === 'A-Z' ) {
-            return arrangeA_Z
-        }
-        if (activeButton === 'Z-A' ) {
-            return arrangeZ_A
-        }
-        if (activeButton === 'Latest date' ) {
-            return ascendingOrder
-        }
-        if (activeButton === 'Oldest date' ) {
-            return descendingOrder
-        }
-    }
-
-    const dataSorting = sortingData()
+    const dataSorting = sortingData(favEpisode, activeButton)
 
     console.log(dataSorting)
 

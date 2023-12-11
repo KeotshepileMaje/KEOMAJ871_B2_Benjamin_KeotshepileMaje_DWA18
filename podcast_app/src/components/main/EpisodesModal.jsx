@@ -49,9 +49,11 @@ export default function EpisodesModal({ show, handleClose, selectedSeasonData, s
                 [episodeId]: true,
             };
     
+            // episodeDetails => An object with episode details
             const episodeDetails = selectedSeasonData.episodes.find(
                 episode => episode.episode === episodeId
             );
+            console.log(episodeDetails)
 
             const moreDetailAboutEpisode = {
                 ...episodeDetails,
@@ -61,7 +63,7 @@ export default function EpisodesModal({ show, handleClose, selectedSeasonData, s
                 lastUpdate: updated
             };
             // Store the latest favorite episode object
-            addFavoriteEpisode(prevEpisodes => [{...moreDetailAboutEpisode}]);
+            addFavoriteEpisode(() => [{...moreDetailAboutEpisode}]);
 
             return updatedFavorites;
         });
