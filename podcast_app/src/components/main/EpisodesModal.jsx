@@ -2,7 +2,7 @@ import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
 import Card from 'react-bootstrap/Card';
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
-import './EpisodesModal.css'
+// import './EpisodesModal.css'
 // import Favourite from '../sidebar/Favourite';
 import { useState, useEffect } from 'react';
 import supabase from '../../config/supabaseClient';

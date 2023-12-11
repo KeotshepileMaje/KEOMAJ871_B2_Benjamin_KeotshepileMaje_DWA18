@@ -1,16 +1,7 @@
 import { useState } from 'react';
 import './App.css'
-import NavbarComponent from './components/header/Navbar'
-import MainContent from './components/MainContent'
 import Loggin from './components/welcome_page/Loggin';
-function Home() {
-    return (
-        <div className='Home'>
-            <NavbarComponent />
-            <MainContent />  
-         </div>
-    )
-}
+import Home from './home';
 
 export default function App() {
 
@@ -22,7 +13,7 @@ export default function App() {
 
     return (
         <div>
-            {
+            {/* {
                 !loggInHome && 
                 <Loggin
                     handleLoggin = {handleLoggin}
@@ -31,7 +22,8 @@ export default function App() {
             }
             {
                 loggInHome && <Home />
-            }
+            } */}
+            <Home />
         </div>
     )
 }
